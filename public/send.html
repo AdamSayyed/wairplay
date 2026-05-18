@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>WairPlay — Send File</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body::before {
+      background:
+        radial-gradient(ellipse at 30% 10%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 90%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="send-container">
+    <div class="glass-card send-card slide-up">
+
+      <div class="text-center mb-24">
+        <h1>✈ WairPlay</h1>
+        <p class="text-secondary" style="font-size:0.85rem; margin-top:4px;">Send to Windows PC</p>
+      </div>
+
+      <!-- Status -->
+      <div class="text-center mb-24">
+        <div id="statusBadge" class="status-badge status-badge--waiting">
+          <span class="status-dot"></span>
+          <span id="statusText">Connecting...</span>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div id="errorSection" class="hidden text-center mb-24">
+        <div class="status-badge status-badge--error">
+          <span>⚠</span>
+          <span id="errorText">Connection failed</span>
+        </div>
+      </div>
+
+      <!-- Upload Section -->
+      <div id="uploadSection" class="hidden">
+        <div id="fileUploadZone" class="file-upload-zone mb-24">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">Tap to select file</div>
+          <div class="text-muted" style="font-size:0.75rem; margin-top:6px;">Photos, videos, documents</div>
+        </div>
+        <input type="file" id="fileInput" accept="*/*">
+
+        <div id="fileInfoSection" class="hidden mb-24">
+          <div class="file-info">
+            <div class="file-icon" id="fileIcon">📄</div>
+            <div class="file-details">
+              <div class="file-name" id="fileName">—</div>
+              <div class="file-size" id="fileSize">—</div>
+            </div>
+          </div>
+        </div>
+
+        <button id="sendBtn" class="btn-primary" style="width:100%;" disabled>
+          Send to PC
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div id="progressSection" class="hidden text-center">
+        <div class="circular-progress mb-16">
+          <svg viewBox="0 0 140 140">
+            <defs>
+              <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#00d4ff"/>
+                <stop offset="50%" stop-color="#4a7dff"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+              </linearGradient>
+            </defs>
+            <circle class="progress-bg" cx="70" cy="70" r="65"/>
+            <circle class="progress-ring" id="progressRing" cx="70" cy="70" r="65"/>
+          </svg>
+          <div class="progress-text" id="progressPercent">0%</div>
+        </div>
+        <p class="text-secondary" style="font-size:0.9rem;" id="progressLabel">Uploading...</p>
+      </div>
+
+      <!-- Success -->
+      <div id="successSection" class="hidden text-center">
+        <div class="success-icon mb-16">✅</div>
+        <h2 class="mb-8">Sent Successfully</h2>
+        <p class="text-secondary" id="successDetails">File received on your PC</p>
+        <button id="sendAnotherBtn" class="btn-primary mt-24" style="width:100%;">
+          Send Another File
+        </button>
+      </div>
+
+      <!-- Error Recovery -->
+      <div id="failSection" class="hidden text-center">
+        <div class="success-icon mb-16">❌</div>
+        <h2 class="mb-8">Upload Failed</h2>
+        <p class="text-secondary" id="failText">Something went wrong</p>
+        <button id="retryBtn" class="btn-primary mt-24" style="width:100%;">
+          Try Again
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/sender.js"></script>
+</body>
+</html>
