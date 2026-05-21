@@ -236,41 +236,47 @@ app.post("/api/session/:sessionId/join", function (req, res) {
    API: UPLOAD FILE TO SESSION
    ==================================== */
 
-app.post("/api/session/:sessionId/upload", upload.single("file"), function (req, res) {
+app.post("/api/session/:sessionId/upload", upload.array("files", 50), function (req, res) {
   var session = getSession(req.params.sessionId);
   if (!session) {
     res.status(404).json({ error: "Session expired" });
     return;
   }
 
-  if (!req.file) {
-    res.status(400).json({ error: "No file received" });
+  if (!req.files || req.files.length === 0) {
+    res.status(400).json({ error: "No files received" });
     return;
   }
 
-  var fileEntry = {
-    id: uuidv4().slice(0, 8),
-    name: req.file.originalname,
-    savedAs: req.file.filename,
-    size: req.file.size,
-    type: req.file.mimetype,
-    time: new Date().toISOString(),
-    downloaded: false
-  };
+  var uploadedFiles = [];
 
-  session.files.push(fileEntry);
+  req.files.forEach(function(file) {
+    var fileEntry = {
+      id: uuidv4().slice(0, 8),
+      name: file.originalname,
+      savedAs: file.filename,
+      size: file.size,
+      type: file.mimetype,
+      time: new Date().toISOString(),
+      downloaded: false
+    };
 
-  broadcast(session.id, "file-received", fileEntry);
+    session.files.push(fileEntry);
 
-  console.log("=================================");
-  console.log("FILE RECEIVED — Session:", session.id);
-  console.log("Name:", fileEntry.name);
-  console.log("Size:", formatSize(fileEntry.size));
-  console.log("=================================");
+    broadcast(session.id, "file-received", fileEntry);
+
+    console.log("=================================");
+    console.log("FILE RECEIVED — Session:", session.id);
+    console.log("Name:", fileEntry.name);
+    console.log("Size:", formatSize(fileEntry.size));
+    console.log("=================================");
+    
+    uploadedFiles.push(fileEntry);
+  });
 
   res.json({
     success: true,
-    file: fileEntry
+    files: uploadedFiles
   });
 });
 

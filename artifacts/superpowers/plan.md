@@ -1,19 +1,33 @@
-# Web AirDrop for Windows (MVP) — Updated Plan
+## Goal
+Show an image preview when the user long-presses (holds) on the file info box after selecting an image file.
 
-**UX Change:** Chrome Extension popup pattern. Click icon → QR pops up → scan → transfer.
+## Assumptions
+- The preview should trigger via touch or mouse long-press (e.g., holding for ~500ms).
+- We can use `URL.createObjectURL()` to quickly render the selected file client-side before upload.
+- If multiple files are selected, we will look for the first valid image to preview, or do nothing if none are images.
+- A full-screen overlay will be used to display the image.
 
-**Architecture:**
-1. Node.js server (local background) — Socket.IO + file writing
-2. Chrome Extension popup — shows QR, status, progress
-3. iPhone Safari page — sender (served by Node.js)
+## Plan
+1. **Update HTML for Preview Overlay**
+   - **Files:** `public/send.html`
+   - **Change:** Add an `#imagePreviewOverlay` element (hidden by default) with an `<img>` tag and a close button. Style it to be a full-screen, high z-index overlay with a semi-transparent dark background.
+   - **Verify:** Ensure `send.html` parses correctly and the overlay is hidden by default.
 
-## Tasks
-1. Init project + npm install
-2. Local IP utility
-3. Express + Socket.IO server (full backend)
-4. Premium CSS design system
-5. iPhone sender page (send.html + sender.js)
-6. Chrome extension (manifest + popup + popup.js)
-7. End-to-end test
+2. **Add Long-Press and Preview Logic to JS**
+   - **Files:** `public/js/sender.js`
+   - **Change:** 
+     - Add a `contextmenu` listener to `fileInfoSection` to `preventDefault()` (prevents default mobile menus on long press).
+     - Add `touchstart` / `mousedown` listeners to start a ~500ms timer.
+     - Add `touchend` / `mouseup` / `mouseleave` listeners to clear the timer if released early.
+     - If the timer fires, find the first image in `selectedFiles`, generate a `URL.createObjectURL()`, and display the overlay.
+     - Add click handlers to close the overlay and revoke the object URL.
+   - **Verify:** Open the sender UI, select an image, long-press the file box, and verify the image preview appears and can be closed.
 
-**Status:** APPROVED with Chrome Extension modification. Executing now.
+## Risks & mitigations
+- **Risk:** The default context menu still appears on mobile devices.
+  - **Mitigation:** Adding `oncontextmenu="return false;"` or `e.preventDefault()` to the box, and using `user-select: none;` / `-webkit-touch-callout: none;` via CSS.
+- **Risk:** Memory leak from object URLs.
+  - **Mitigation:** Explicitly call `URL.revokeObjectURL()` when closing the preview overlay or selecting new files.
+
+## Rollback plan
+Revert `public/send.html` and `public/js/sender.js` to their previous states.

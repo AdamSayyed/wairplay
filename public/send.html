@@ -47,9 +47,9 @@
           <div class="upload-text">Tap to select file</div>
           <div class="text-muted" style="font-size:0.75rem; margin-top:6px;">Photos, videos, documents</div>
         </div>
-        <input type="file" id="fileInput" accept="*/*">
+        <input type="file" id="fileInput" accept="*/*" multiple>
 
-        <div id="fileInfoSection" class="hidden mb-24">
+        <div id="fileInfoSection" class="hidden mb-24" style="user-select: none; -webkit-touch-callout: none; cursor: pointer;">
           <div class="file-info">
             <div class="file-icon" id="fileIcon">📄</div>
             <div class="file-details">
@@ -85,10 +85,9 @@
 
       <!-- Success -->
       <div id="successSection" class="hidden text-center">
-        <div class="success-icon mb-16">✅</div>
-        <h2 class="mb-8">Sent Successfully</h2>
-        <p class="text-secondary" id="successDetails">File received on your PC</p>
-        <button id="sendAnotherBtn" class="btn-primary mt-24" style="width:100%;">
+        <h2 class="mb-8 mt-16">Sent Successfully</h2>
+        <div id="successFileList" class="text-left mb-24"></div>
+        <button id="sendAnotherBtn" class="btn-primary" style="width:100%;">
           Send Another File
         </button>
       </div>
@@ -104,6 +103,14 @@
       </div>
 
     </div>
+  </div>
+
+  <!-- Image Preview Modal -->
+  <div id="imagePreviewOverlay" class="hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+    <div style="width: 100%; display: flex; justify-content: flex-end; padding: 20px; box-sizing: border-box; position: absolute; top: 0; left: 0;">
+      <span id="closePreviewBtn" style="color: white; font-size: 36px; cursor: pointer; line-height: 1; padding: 10px;">&times;</span>
+    </div>
+    <img id="imagePreviewImg" style="max-width: 90%; max-height: 80vh; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
   </div>
 
   <script src="/js/sender.js"></script>
