@@ -113,6 +113,50 @@ io.on("connection", (socket) => {
     }
   });
 
+  /* ====================================
+     WEBRTC SIGNALING RELAY
+     ==================================== */
+
+  /* --- Relay WebRTC signal (SDP offer/answer, ICE candidates) --- */
+  socket.on("signal", (data) => {
+    if (data.targetSocketId) {
+      io.to(data.targetSocketId).emit("signal", {
+        from: socket.id,
+        data: data.data
+      });
+    }
+  });
+
+  /* --- File transfer request: sender → receiver --- */
+  socket.on("send-file-request", (data) => {
+    var senderDevice = devices.get(socket.id);
+    var senderName = senderDevice ? senderDevice.deviceName : "Unknown";
+
+    console.log("[SIGNAL] File request from", senderName, "→", data.targetSocketId);
+
+    io.to(data.targetSocketId).emit("file-request", {
+      from: socket.id,
+      senderName: senderName,
+      files: data.files
+    });
+  });
+
+  /* --- File accepted: receiver → sender --- */
+  socket.on("accept-file", (data) => {
+    console.log("[SIGNAL] File accepted by", socket.id, "→", data.targetSocketId);
+    io.to(data.targetSocketId).emit("file-accepted", {
+      from: socket.id
+    });
+  });
+
+  /* --- File rejected: receiver → sender --- */
+  socket.on("reject-file", (data) => {
+    console.log("[SIGNAL] File rejected by", socket.id, "→", data.targetSocketId);
+    io.to(data.targetSocketId).emit("file-rejected", {
+      from: socket.id
+    });
+  });
+
   /* --- Disconnect --- */
   socket.on("disconnect", () => {
     var device = devices.get(socket.id);
