@@ -3,192 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WairPlay — AirDrop for Windows</title>
+  <meta name="description" content="WairPlay — AirDrop for any device. Send files directly between devices on the same network using peer-to-peer WebRTC.">
+  <title>WairPlay — P2P File Transfer</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/style.css">
-  <style>
-    .receiver-container {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      position: relative;
-      z-index: 1;
-    }
-    .receiver-card {
-      width: 100%;
-      max-width: 460px;
-    }
-    .logo-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      justify-content: center;
-      margin-bottom: 6px;
-    }
-    .subtitle {
-      color: var(--text-secondary);
-      font-size: 0.88rem;
-      text-align: center;
-      margin-bottom: 28px;
-    }
-    .qr-box {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 240px;
-      margin-bottom: 16px;
-    }
-    .qr-box img {
-      border-radius: var(--radius-md);
-      border: 2px solid var(--glass-border);
-      transition: all 0.4s ease;
-    }
-    .qr-box img:hover {
-      border-color: var(--accent-cyan);
-      box-shadow: var(--glow-cyan);
-    }
-    .spinner {
-      width: 44px; height: 44px;
-      border: 3px solid var(--glass-border);
-      border-top-color: var(--accent-cyan);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .url-display {
-      font-family: monospace;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      word-break: break-all;
-      padding: 10px 14px;
-      background: rgba(255,255,255,0.03);
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--glass-border);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: center;
-      margin-bottom: 16px;
-    }
-    .url-display:hover {
-      background: rgba(255,255,255,0.06);
-      border-color: var(--accent-cyan);
-    }
-    .session-id-display {
-      text-align: center;
-      margin-bottom: 12px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-    .session-id-display span {
-      color: var(--accent-cyan);
-      font-family: monospace;
-      font-weight: 700;
-      font-size: 1.1rem;
-      letter-spacing: 2px;
-    }
-    .file-card {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 16px;
-      background: rgba(52, 211, 153, 0.06);
-      border: 1px solid rgba(52, 211, 153, 0.15);
-      border-radius: var(--radius-md);
-      margin-bottom: 12px;
-      animation: fadeSlideIn 0.4s ease-out;
-    }
-    .file-card .fc-icon { font-size: 2rem; flex-shrink: 0; }
-    .file-card .fc-details { flex: 1; min-width: 0; }
-    .file-card .fc-name {
-      font-weight: 600; font-size: 0.92rem;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .file-card .fc-size {
-      color: var(--text-secondary); font-size: 0.78rem; margin-top: 2px;
-    }
-    .btn-download {
-      background: linear-gradient(135deg, #34d399, #10b981);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      flex-shrink: 0;
-      text-decoration: none;
-    }
-    .btn-download:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 0 16px rgba(52, 211, 153, 0.4);
-    }
-    .history-title {
-      font-family: var(--font-heading);
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 12px;
-      margin-top: 20px;
-    }
-    .tip-bar {
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.72rem;
-      margin-top: 20px;
-    }
-  </style>
 </head>
 <body>
-  <div class="receiver-container">
-    <div class="glass-card receiver-card slide-up">
 
-      <div class="text-center">
-        <div class="logo-row">
-          <span style="font-size:2rem;">✈</span>
-          <h1>WairPlay</h1>
-        </div>
-        <p class="subtitle">AirDrop for Windows</p>
+  <!-- ===== MAIN CONTAINER ===== -->
+  <div class="app-container" id="appContainer">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-row">
+        <span class="logo-icon">✈</span>
+        <h1>WairPlay</h1>
       </div>
+      <p class="tagline">Tap a device to send files — direct P2P, no cloud</p>
+    </header>
 
-      <!-- Status -->
-      <div class="text-center mb-16">
-        <div id="statusBadge" class="status-badge status-badge--waiting">
-          <span class="status-dot"></span>
-          <span id="statusText">Creating session...</span>
-        </div>
-      </div>
-
-      <!-- Session ID -->
-      <div class="session-id-display hidden" id="sessionInfo">
-        Session: <span id="sessionIdDisplay"></span>
-      </div>
-
-      <!-- QR Code -->
-      <div id="qrSection">
-        <div class="qr-box" id="qrBox">
-          <div class="spinner"></div>
-        </div>
-        <div class="url-display hidden" id="pairingUrl" title="Click to copy URL"></div>
-        <p class="text-center text-secondary" style="font-size:0.82rem;" id="qrInstruction">Generating QR code...</p>
-      </div>
-
-      <!-- Received Files -->
-      <div id="filesSection" class="hidden">
-        <div class="history-title">📥 Received Files</div>
-        <div id="filesList"></div>
-      </div>
-
+    <!-- Device Name Display -->
+    <div class="my-device-badge" id="myDeviceBadge">
+      <span class="my-device-dot"></span>
+      <span id="myDeviceName">Detecting device...</span>
     </div>
 
-    <p class="tip-bar">
-      ☁️ Works over any network — no same Wi-Fi needed
-    </p>
+    <!-- Radar / Discovery Area -->
+    <div class="radar-area" id="radarArea">
+      <!-- Radar rings (animated) -->
+      <div class="radar-ring radar-ring--1"></div>
+      <div class="radar-ring radar-ring--2"></div>
+      <div class="radar-ring radar-ring--3"></div>
+
+      <!-- Center icon -->
+      <div class="radar-center">
+        <div class="radar-center-icon" id="radarCenterIcon">📡</div>
+        <div class="radar-center-label" id="radarCenterLabel">Scanning...</div>
+      </div>
+
+      <!-- Device avatars will be injected here -->
+      <div class="device-orbit" id="deviceOrbit"></div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState">
+      <p>Open <strong>WairPlay</strong> on another device on the same network</p>
+    </div>
+
+    <!-- Transfer Overlay (shown during send/receive) -->
+    <div class="transfer-overlay hidden" id="transferOverlay">
+      <div class="glass-card transfer-card">
+        <div class="transfer-header" id="transferHeader">
+          <span class="transfer-icon" id="transferIcon">📤</span>
+          <h2 id="transferTitle">Sending...</h2>
+        </div>
+        <div class="transfer-file-info">
+          <span class="transfer-file-icon" id="transferFileIcon">📄</span>
+          <div class="transfer-file-details">
+            <div class="transfer-file-name" id="transferFileName">—</div>
+            <div class="transfer-file-size" id="transferFileSize">—</div>
+          </div>
+        </div>
+        <div class="transfer-progress-wrap">
+          <div class="transfer-progress-bar">
+            <div class="transfer-progress-fill" id="transferProgressFill"></div>
+          </div>
+          <div class="transfer-progress-text" id="transferProgressText">0%</div>
+        </div>
+        <button class="btn-cancel" id="transferCancelBtn">Cancel</button>
+      </div>
+    </div>
+
+    <!-- File Request Modal (receiver sees this) -->
+    <div class="request-overlay hidden" id="requestOverlay">
+      <div class="glass-card request-card">
+        <div class="request-icon">📥</div>
+        <h2 class="request-title" id="requestTitle">Incoming File</h2>
+        <p class="request-from" id="requestFrom">Unknown device</p>
+        <div class="request-files" id="requestFiles"></div>
+        <div class="request-actions">
+          <button class="btn-accept" id="requestAcceptBtn">Accept</button>
+          <button class="btn-decline" id="requestDeclineBtn">Decline</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div class="toast hidden" id="successToast">
+      <span class="toast-icon">✅</span>
+      <span class="toast-text" id="successToastText">Transfer complete</span>
+    </div>
+
+    <!-- Error Toast -->
+    <div class="toast toast--error hidden" id="errorToast">
+      <span class="toast-icon">❌</span>
+      <span class="toast-text" id="errorToastText">Transfer failed</span>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" multiple style="display:none;">
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>📡 Files transfer directly — your server never touches them</p>
+    </footer>
   </div>
 
-  <script src="/js/receiver.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/webrtc.js"></script>
+  <script src="/js/transfer.js"></script>
+  <script src="/js/app.js"></script>
 </body>
 </html>

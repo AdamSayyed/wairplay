@@ -1,25 +1,28 @@
-# Final Summary
+# Final Summary — Extension Icon & UI Redesign
 
 ## Review Pass
 - **Blocker:** None
 - **Major:** None
 - **Minor:** None
 - **Nit:** None
-The overlay logic avoids memory leaks by strictly using `URL.revokeObjectURL` on cleanup. Touch events include `{ passive: true }` except where `preventDefault` is needed (which is only on `contextmenu`).
 
 ## Summary of changes
-- **`public/send.html`**: Added a full-screen, blurry backdrop `div` containing an image tag and a close button, initially set to `hidden`. Injected `user-select: none` and `-webkit-touch-callout: none` directly into `#fileInfoSection` to disable the default text selection and native context-menu behaviors on mobile devices when long-pressing.
-- **`public/js/sender.js`**: Hooked `mousedown`/`touchstart` and `mouseup`/`mouseleave`/`touchend` events to the file information box. When the box is pressed, a 500ms timeout begins. Once elapsed, it grabs the first image from `selectedFiles`, creates an object URL, mounts it to the newly added `<img>` element, and reveals the overlay. Releasing early cancels the timeout. Clicking the overlay or the close button hides it and frees the object URL memory.
+- **Icons:** Generated a professional branded icon (white airplane on WairPlay gradient background) at 16px, 48px, and 128px. Updated `manifest.json` to reference all sizes.
+- **Popup UI (`popup.html`):** Complete redesign with premium glassmorphism aesthetic — dark deep background with radial gradient overlays, Outfit/Inter fonts, animated status badges (waiting/connected/error), loading spinner, QR code with glowing hover border, clickable copy-URL box, received files section with animated file cards, and a footer tip.
+- **Popup Logic (`popup.js`):** Rewrote with proper state machine (loading → waiting → connected → receiving), copy-to-clipboard with green visual feedback, error state with helpful messaging, and real-time received files list populated via Chrome message passing.
+- **Background Script (`background.js`):** Added `chrome.runtime.sendMessage()` forwarding for `sender-connected` and `file-received` SSE events so the popup UI updates live.
 
 ## Verification commands run + results
-- Visual inspection and logic walk-through - **Result:** pass
+- Icon generation script: pass
+- JSON syntax validation (manifest.json): pass
+- Code logic review: pass
 
 ## Follow-ups (if any)
 - None
 
 ## Manual validation steps
-1. Use your mobile device to connect to the sender session.
-2. Select an image file.
-3. Long press (hold your finger) on the file box area showing the image metadata.
-4. Verify the preview overlay smoothly appears.
-5. Tap anywhere outside the image or tap the close 'x' to dismiss it.
+1. Go to `chrome://extensions/` and click the **↻ Reload** button on the WairPlay extension.
+2. Verify the new gradient airplane icon appears on the extensions page and in the toolbar.
+3. Click the extension icon — verify the premium dark popup renders with a loading spinner, then the QR code.
+4. Click the pairing URL — verify it copies to clipboard with green "✓ Copied" feedback.
+5. Scan the QR code from your phone, select a file, and send — verify the popup shows "Sender connected ✓" and the received file appears in the files list.
