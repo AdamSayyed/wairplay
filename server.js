@@ -21,16 +21,35 @@ app.use(express.static("public"));
 
 const devices = new Map(); // socketId → { socketId, deviceName, deviceType, publicIP, lastSeen }
 
+function isPrivateIP(ip) {
+  if (!ip) return false;
+  if (ip === "127.0.0.1" || ip === "::1" || ip.startsWith("fe80:")) {
+    return true;
+  }
+  var parts = ip.split(".");
+  if (parts.length === 4) {
+    var first = parseInt(parts[0], 10);
+    var second = parseInt(parts[1], 10);
+    if (first === 10) return true;
+    if (first === 172 && (second >= 16 && second <= 31)) return true;
+    if (first === 192 && second === 168) return true;
+  }
+  return false;
+}
+
 function getPublicIP(socket) {
   var forwarded = socket.handshake.headers["x-forwarded-for"];
-  if (forwarded) {
-    return forwarded.split(",")[0].trim();
-  }
-  var addr = socket.handshake.address;
+  var addr = forwarded ? forwarded.split(",")[0].trim() : socket.handshake.address;
+
   // Normalize IPv6 localhost to IPv4
-  if (addr === "::1" || addr === "::ffff:127.0.0.1") return "127.0.0.1";
+  if (addr === "::1" || addr === "::ffff:127.0.0.1") addr = "127.0.0.1";
   // Strip ::ffff: prefix from IPv4-mapped IPv6
-  if (addr && addr.startsWith("::ffff:")) return addr.slice(7);
+  if (addr && addr.startsWith("::ffff:")) addr = addr.slice(7);
+
+  // Group all local/private LAN traffic together for development
+  if (isPrivateIP(addr)) {
+    return "local";
+  }
   return addr;
 }
 

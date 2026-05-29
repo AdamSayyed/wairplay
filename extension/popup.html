@@ -33,7 +33,7 @@
       background: var(--bg-deep);
       color: var(--text-primary);
       width: 380px;
-      min-height: 420px;
+      min-height: 460px;
       overflow-x: hidden;
       position: relative;
       -webkit-font-smoothing: antialiased;
@@ -55,11 +55,12 @@
       padding: 20px;
     }
 
+    /* --- Header --- */
     .header {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .header .logo { font-size: 1.5rem; }
@@ -74,6 +75,7 @@
       background-clip: text;
     }
 
+    /* --- Status Badge --- */
     .status-badge {
       display: inline-flex;
       align-items: center;
@@ -82,7 +84,8 @@
       border-radius: 100px;
       font-size: 0.8rem;
       font-weight: 500;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      transition: all 0.3s ease;
     }
 
     .status-badge--waiting {
@@ -127,15 +130,16 @@
       50% { opacity: 0.5; transform: scale(0.7); }
     }
 
+    /* --- Glass Card --- */
     .glass-card {
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
-      padding: 20px;
+      padding: 16px;
       position: relative;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .glass-card::before {
@@ -146,102 +150,171 @@
       border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
 
-    .qr-area {
+    /* --- Device Name Row --- */
+    .my-device-row {
       display: flex;
-      justify-content: center;
       align-items: center;
-      min-height: 200px;
-      position: relative;
+      gap: 8px;
+      margin-bottom: 14px;
     }
 
-    .qr-area img {
-      border-radius: var(--radius-md);
-      border: 2px solid var(--glass-border);
-      transition: all 0.3s ease;
-    }
-
-    .qr-area img:hover {
-      border-color: var(--accent-cyan);
-      box-shadow: var(--glow-cyan);
-    }
-
-    .qr-spinner {
-      width: 40px; height: 40px;
-      border: 3px solid var(--glass-border);
-      border-top-color: var(--accent-cyan);
+    .my-device-dot {
+      width: 8px; height: 8px;
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      background: var(--success);
+      flex-shrink: 0;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .my-device-name {
+      font-size: 0.85rem;
+      font-weight: 500;
+      flex: 1;
+      min-width: 0;
     }
 
-    .pulse-wrapper {
-      position: relative;
-      display: inline-block;
-    }
-
-    .pulse-wrapper::before,
-    .pulse-wrapper::after {
-      content: "";
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 100%; height: 100%;
-      border-radius: 12px;
-      border: 1.5px solid var(--accent-cyan);
-      transform: translate(-50%, -50%);
-      animation: pulseBox 2.5s ease-out infinite;
-      opacity: 0;
-    }
-
-    .pulse-wrapper::after { animation-delay: 1.25s; }
-
-    @keyframes pulseBox {
-      0% { width: 100%; height: 100%; opacity: 0.5; }
-      100% { width: 140%; height: 140%; opacity: 0; }
-    }
-
-    .instruction {
-      text-align: center;
-      margin-top: 12px;
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-    }
-
-    .pairing-url {
-      font-family: monospace;
-      font-size: 0.68rem;
-      color: var(--text-muted);
-      word-break: break-all;
-      padding: 8px 10px;
-      background: rgba(255,255,255,0.03);
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--glass-border);
-      margin-top: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .pairing-url:hover {
+    .my-device-name-input {
       background: rgba(255,255,255,0.06);
-      border-color: var(--accent-cyan);
+      border: 1px solid var(--accent-cyan);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.85rem;
+      padding: 4px 8px;
+      outline: none;
+      width: 100%;
     }
 
-    /* --- Transfer UI --- */
+    .rename-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 4px;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .rename-btn:hover { color: var(--accent-cyan); }
+
+    /* --- Section Titles --- */
+    .section-title {
+      font-family: "Outfit", sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    /* --- Device List --- */
+    .device-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .device-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+
+    .device-card:hover {
+      background: var(--glass-bg-hover);
+      border-color: rgba(0, 212, 255, 0.3);
+      box-shadow: 0 0 12px rgba(0, 212, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .device-card:active {
+      transform: scale(0.98);
+    }
+
+    .device-emoji {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      width: 36px;
+      text-align: center;
+    }
+
+    .device-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .device-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .device-hint {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .device-arrow {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      transition: color 0.2s;
+    }
+
+    .device-card:hover .device-arrow { color: var(--accent-cyan); }
+
+    /* --- Empty State --- */
+    .empty-state {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+    }
+
+    .empty-state-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      opacity: 0.6;
+    }
+
+    .scanning-hint {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* --- Transfer Card --- */
     .transfer-card {
       text-align: center;
+    }
+
+    .transfer-direction {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--accent-cyan);
+      margin-bottom: 10px;
     }
 
     .file-info-row {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 12px;
+      padding: 10px 12px;
       background: rgba(255,255,255,0.03);
       border-radius: var(--radius-md);
       border: 1px solid var(--glass-border);
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       text-align: left;
     }
 
@@ -250,12 +323,12 @@
     .file-info-row .fi-details { flex: 1; min-width: 0; }
 
     .file-info-row .fi-name {
-      font-weight: 600; font-size: 0.88rem;
+      font-weight: 600; font-size: 0.86rem;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
     .file-info-row .fi-size {
-      color: var(--text-secondary); font-size: 0.75rem; margin-top: 2px;
+      color: var(--text-secondary); font-size: 0.73rem; margin-top: 2px;
     }
 
     .progress-bar-wrap {
@@ -263,7 +336,7 @@
       background: rgba(255,255,255,0.06);
       border-radius: 100px;
       overflow: hidden;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .progress-bar-fill {
@@ -279,18 +352,27 @@
       justify-content: space-between;
       font-size: 0.78rem;
       color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    .btn-cancel {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      color: var(--error);
+      padding: 6px 18px;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel:hover {
+      background: rgba(248, 113, 113, 0.2);
     }
 
     /* --- History --- */
     .history-section { margin-top: 4px; }
-
-    .history-title {
-      font-family: "Outfit", sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-    }
 
     .history-list { list-style: none; }
 
@@ -298,7 +380,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 8px 0;
+      padding: 7px 0;
       border-bottom: 1px solid rgba(255,255,255,0.04);
       animation: slideIn 0.3s ease-out;
     }
@@ -310,20 +392,20 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .history-item .hi-check { color: var(--success); font-size: 1rem; }
+    .history-item .hi-icon { font-size: 0.85rem; flex-shrink: 0; }
     .history-item .hi-name {
-      flex: 1; font-size: 0.82rem;
+      flex: 1; font-size: 0.8rem;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .history-item .hi-size {
-      color: var(--text-muted); font-size: 0.72rem; flex-shrink: 0;
+      color: var(--text-muted); font-size: 0.7rem; flex-shrink: 0;
     }
 
     .empty-history {
       text-align: center;
       color: var(--text-muted);
-      font-size: 0.8rem;
-      padding: 16px 0;
+      font-size: 0.78rem;
+      padding: 12px 0;
     }
 
     .hidden { display: none !important; }
@@ -331,8 +413,32 @@
     .footer {
       text-align: center;
       padding-top: 8px;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: var(--text-muted);
+    }
+
+    /* --- Device list enter animation --- */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .device-card { animation: fadeUp 0.3s ease-out both; }
+    .device-card:nth-child(2) { animation-delay: 0.05s; }
+    .device-card:nth-child(3) { animation-delay: 0.1s; }
+    .device-card:nth-child(4) { animation-delay: 0.15s; }
+
+    /* --- Radar scanning dots animation --- */
+    .scanning-dots::after {
+      content: "";
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0% { content: ""; }
+      25% { content: "."; }
+      50% { content: ".."; }
+      75% { content: "..."; }
     }
   </style>
 </head>
@@ -348,29 +454,32 @@
     <!-- Status -->
     <div id="statusBadge" class="status-badge status-badge--waiting">
       <span class="status-dot"></span>
-      <span id="statusText">Starting session...</span>
+      <span id="statusText">Connecting...</span>
     </div>
 
-    <!-- Server Offline -->
-    <div id="offlineCard" class="glass-card hidden" style="text-align:center;">
-      <p style="font-size:0.9rem; margin-bottom:8px;">⚠️ Server not running</p>
-      <p style="font-size:0.78rem; color:var(--text-secondary);">Start the server first:</p>
-      <div class="pairing-url" style="margin-top:8px; cursor:default; font-size:0.75rem;">
-        npm start
+    <!-- My Device Name -->
+    <div class="my-device-row" id="myDeviceRow">
+      <span class="my-device-dot" id="myDeviceDot"></span>
+      <span class="my-device-name" id="myDeviceName">Chrome Extension</span>
+      <button class="rename-btn" id="renameBtn" title="Rename device">✏️</button>
+    </div>
+
+    <!-- Nearby Devices -->
+    <div class="glass-card" id="devicesCard">
+      <div class="section-title">Nearby Devices</div>
+      <div class="device-list" id="deviceList">
+        <!-- Device cards injected here -->
+      </div>
+      <div class="empty-state" id="emptyState">
+        <div class="empty-state-icon">📡</div>
+        <div>Looking for devices<span class="scanning-dots"></span></div>
+        <div class="scanning-hint">Open WairPlay on another device on the same Wi-Fi</div>
       </div>
     </div>
 
-    <!-- QR Card -->
-    <div id="qrCard" class="glass-card">
-      <div class="qr-area" id="qrArea">
-        <div class="qr-spinner"></div>
-      </div>
-      <p class="instruction" id="qrInstruction">Generating QR code...</p>
-      <div class="pairing-url hidden" id="pairingUrl" title="Click to copy"></div>
-    </div>
-
-    <!-- Transfer Card -->
+    <!-- Transfer Card (hidden by default) -->
     <div id="transferCard" class="glass-card transfer-card hidden">
+      <div class="transfer-direction" id="txDirection">Sending...</div>
       <div class="file-info-row">
         <div class="fi-icon" id="txFileIcon">📄</div>
         <div class="fi-details">
@@ -383,19 +492,23 @@
       </div>
       <div class="progress-stats">
         <span id="txPercent">0%</span>
-        <span id="txSpeed">—</span>
+        <span id="txStatus">—</span>
       </div>
+      <button class="btn-cancel" id="cancelBtn">Cancel</button>
     </div>
 
     <!-- History -->
     <div class="history-section" id="historySection">
-      <div class="history-title">Received Files</div>
+      <div class="section-title">Transfer History</div>
       <ul class="history-list" id="historyList">
-        <li class="empty-history" id="emptyHistory">No files received yet</li>
+        <li class="empty-history" id="emptyHistory">No transfers yet</li>
       </ul>
     </div>
 
-    <div class="footer">Scan QR with iPhone camera • Same Wi-Fi required</div>
+    <div class="footer">P2P transfers — your server never touches files</div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" multiple style="display:none;">
 
   </div>
 

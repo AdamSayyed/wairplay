@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "WairPlay",
-  "description": "AirDrop for Windows — receive files from your iPhone instantly via QR code",
-  "version": "1.0.0",
+  "description": "AirDrop for Windows — P2P file transfer between devices on the same network",
+  "version": "1.1.0",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -16,7 +16,15 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": [],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "offscreen",
+    "notifications",
+    "downloads",
+    "storage"
+  ],
   "host_permissions": [
     "http://localhost:3000/*"
   ]
